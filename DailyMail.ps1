@@ -29,7 +29,7 @@ function sendMessage{
 
     # Add addresses to BCC
     foreach ($address in $bcc){
-        $addressObject = New-Object system.Net.Mail.mailaddress $address[0], $address[1]
+        $addressObject = New-Object system.Net.Mail.mailaddress $address
         $message.Bcc.Add($addressObject)
     }
 
@@ -40,12 +40,12 @@ function sendMessage{
     $client.EnableSsl = $true
     $client.Credentials = $emailCredentials
 
-    echo "Sending email"
+    echo "Sending email:"
 
     # send the message 
     try { 
         $client.Send($message); 
-        echo "Email sent"
+        echo " - Email sent"
     }   
     catch { 
         "Exception caught while sending message: {0}" -f $Error[0] 

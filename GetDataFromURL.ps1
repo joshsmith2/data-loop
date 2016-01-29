@@ -26,12 +26,13 @@ function getFileFromURL{
     $credentialCache.Add($authURL, "Basic", $webCredentials)
     $client.Credentials = $credentialCache
 
-    Write-Output "Fetching data from URL: $fileURL"
+    echo "Fetching data from URL: $fileURL"
 
     # Download the file
     $client.DownloadFile($fileURL, $outputPath)
 
-    Write-Output "Time taken: $((Get-Date).Subtract($start_time).Seconds) second(s)"  
+    echo " - File downloaded to $outputPath."
+    echo " - Time taken: $((Get-Date).Subtract($start_time).Seconds) second(s)"  
 
 }
 
