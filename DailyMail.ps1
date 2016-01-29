@@ -40,9 +40,12 @@ function sendMessage{
     $client.EnableSsl = $true
     $client.Credentials = $emailCredentials
 
+    echo "Sending email"
+
     # send the message 
     try { 
         $client.Send($message); 
+        echo "Email sent"
     }   
     catch { 
         "Exception caught while sending message: {0}" -f $Error[0] 
