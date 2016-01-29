@@ -4,24 +4,9 @@
 
 #> 
 
-# Given a username, and the path to a file containing a secure string, return a PSCredential object.
-function getCredentials{
-    param(
-        [string] $username,
-        [string] $passwordFile
-    )
-    $credentialObject = New-Object -TypeName System.Management.Automation.PSCredential `
- -ArgumentList $username, (Get-Content $passwordFile | ConvertTo-SecureString)
-
-    return $credentialObject
-}
-
-$emailCredentials = getCredentials -username $emailUsername -passwordFile $emailPasswordFile
-
 # Assemble a system.Net.Mail.MailMessage object, and send it off.
 function sendMessage{
-    
-    
+      
     param( 
         [System.Management.Automation.PSCredential] $emailCredentials, 
         [string] $from,
