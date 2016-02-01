@@ -50,6 +50,24 @@ function checkFileUpdated {
     }
 }
 
+
+# Press a button in a Qlikview document defined by ID. 
+# Throw an exception if this not possible
+function pressButton{
+    param (
+        [string] $buttonID,
+        $qvDoc
+    )
+    try {
+        $button = $qvDoc.GetSheetObject($buttonID)
+        $button.Press()
+    } catch [Exception] {
+        echo "ERROR: Couldn't find or press the button with ID: $buttonID."
+        echo "Full exception trace: "
+        echo $_.Exception | format-list -force
+    }
+}
+
 # Once the conversion QVD has run, reload the App QVD
 # and press the button to output a pdf.
 function ExportPDF {
