@@ -45,7 +45,7 @@ function sendMessage{
     # send the message 
     try { 
         $client.Send($message); 
-        echo " - Email sent"
+        echo " - Email sent to $to"
     }   
     catch { 
         "Exception caught while sending message: {0}" -f $Error[0] 
