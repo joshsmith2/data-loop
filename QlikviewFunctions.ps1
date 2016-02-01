@@ -52,7 +52,6 @@ function checkFileUpdated {
 
 # Once the conversion QVD has run, reload the App QVD
 # and press the button to output a pdf.
-
 function ExportPDF {
     param (
         [string] $QVDToExportFrom
@@ -61,6 +60,8 @@ function ExportPDF {
     $qvComObject = New-Object -comobject QlikTech.Qlikview
     $qvDoc = $qvComObject.OpenDoc($QVDToExportFrom)
     $qvDoc.Activate()
+    $qvDoc.Reload()
+    $qvDoc.ClearAll()
 
     # Press a button to select the last day (Custom config)
     try {
@@ -82,6 +83,9 @@ function ExportPDF {
         echo "Full exception trace: "
         echo $_.Exception | format-list -force       
     }
+
+    # Tidy up
+    $qvDoc.ClearAll()
     $qvDoc.Save()
     $qvDoc.CloseDoc()
     $qvComObject.Quit()
