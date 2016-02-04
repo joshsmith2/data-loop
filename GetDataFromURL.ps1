@@ -5,11 +5,7 @@
 
 #>
 
-$url = "http://prod.method52.casmconsulting.co.uk/output/irish-examiner/download/download-candidates-tweets/cantweets.csv"
-$output = "D:\Qlikview\Projects\Irish Examiner\1_Data\data.csv"
-
 # TODO: Make authenticating optional
-
 function getFileFromURL{
     param(
         [System.Management.Automation.PSCredential] $webCredentials,

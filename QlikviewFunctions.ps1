@@ -56,13 +56,14 @@ function checkFileUpdated {
 function pressButton{
     param (
         [string] $buttonID,
-        $qvDoc
+        $qvDocument
     )
     try {
-        $button = $qvDoc.GetSheetObject($buttonID)
+        $button = $qvDocument.GetSheetObject($buttonID)
         $button.Press()
+        echo "$buttonID pressed"
     } catch [Exception] {
-        echo "ERROR: Couldn't find or press the button with ID: $buttonID."
+        echo "ERROR: Couldn't find or press the button with ID: $buttonID"
         echo "Full exception trace: "
         echo $_.Exception | format-list -force
     }
@@ -79,28 +80,13 @@ function ExportPDF {
     $qvDoc = $qvComObject.OpenDoc($QVDToExportFrom)
     $qvDoc.Activate()
     $qvDoc.Reload()
-    $qvDoc.ClearAll()
 
-    # Press a button to select the last day (Custom config)
-    try {
-        $lastDayButton = $qvDoc.GetSheetObject("LastDay")
-        $lastDayButton.Press()
-    } catch [Exception] {
-        echo "ERROR: Couldn't find or press this button: $lastDayButton."
-        echo "Full exception trace: "
-        echo $_.Exception | format-list -force
-    }
-    
-    # Press the print button (Custom config)
-    # TODO: I think we can actually do this directly
-    try {
-        $printButton = $qvDoc.GetSheetObject("PrintButton")
-        $printButton.Press()
-    } catch [Exception] {
-        echo "ERROR: Couldn't find or press this button: $printButton."
-        echo "Full exception trace: "
-        echo $_.Exception | format-list -force       
-    }
+    Start-Sleep -s 1
+
+    pressButton -qvDocument $qvDoc -buttonID "PrintCork"
+    pressButton -qvDocument $qvDoc -buttonID "PrintCork"
+    pressButton -qvDocument $qvDoc -buttonID "PrintIndependents"
+    pressButton -qvDocument $qvDoc -buttonID "PrintAllCandidates"
 
     # Tidy up
     $qvDoc.ClearAll()
@@ -140,7 +126,7 @@ function fullReloadAndPrint{
         [string] $conversionQVWPath,
         [string] $convertedQVDPath,
         [string] $appQVDPath,
-        [string] $pdfPath,
+        [string[]] $pdfPaths,
         [int] $exportAttempts = 5
     )
 
@@ -163,15 +149,16 @@ function fullReloadAndPrint{
     # Reload the app QVD, and press buttons within it to generate a pdf. 
     # Try this a few times.
     $timeBeforeAppReload = Get-Date
-    echo "Reloading app QVD"
+    echo "Reloading app QVD at $appQVDPath"
     reloadAndExport -QVDToReload $appQVDPath `
                     -attempts $exportAttempts
-                        
-    echo "Checking PDF has been updated"
-    checkFileUpdated -path $pdfPath `
-                     -qvd $appQVDPath `
-                     -timeout 600 `
-                     -since $timeBeforeAppReload
-
+    
+    foreach ($PDF in $pdfPaths){                    
+        echo "Checking the PDF at $PDF has been updated"
+        checkFileUpdated -path $PDF `
+                         -qvd $appQVDPath `
+                         -timeout 600 `
+                         -since $timeBeforeAppReload
+    }
     $ErrorActionPreference = $oldErrorActionPreference
 }
