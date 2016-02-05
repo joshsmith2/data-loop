@@ -59,6 +59,7 @@ function pressButton{
         $qvDocument
     )
     try {
+        $qvDocument.ClearAll()
         $button = $qvDocument.GetSheetObject($buttonID)
         $button.Press()
         echo "$buttonID pressed"
@@ -83,10 +84,10 @@ function ExportPDF {
 
     Start-Sleep -s 1
 
-    pressButton -qvDocument $qvDoc -buttonID "PrintCork"
+    pressButton -qvDocument $qvDoc -buttonID "PrintAllCandidates"
     pressButton -qvDocument $qvDoc -buttonID "PrintCork"
     pressButton -qvDocument $qvDoc -buttonID "PrintIndependents"
-    pressButton -qvDocument $qvDoc -buttonID "PrintAllCandidates"
+
 
     # Tidy up
     $qvDoc.ClearAll()
@@ -143,7 +144,7 @@ function fullReloadAndPrint{
     echo "Checking QVD file"
     checkFileUpdated -path $convertedQVDPath `
                      -qvd $conversionQVWPath `
-                     -timeout 10 `
+                     -timeout 60 `
                      -since $timeBeforeConversion
 
     # Reload the app QVD, and press buttons within it to generate a pdf. 
